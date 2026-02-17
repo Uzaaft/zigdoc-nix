@@ -49,5 +49,9 @@
         default = self.packages.${system}.zigdoc;
       }
     );
+
+    overlays.default = final: prev: {
+      zigdoc = self.packages.${prev.system}.zigdoc;
+    };
   };
 }
