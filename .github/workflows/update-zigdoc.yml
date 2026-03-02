@@ -20,8 +20,7 @@ jobs:
         id: check
         run: |
           CURRENT_TAG=$(grep -oP "rev = \"v\K[^\"]*" flake.nix)
-          LATEST_TAG=$(curl -sL "https://api.github.com/repos/rockorager/zigdoc/releases/latest" \
-            | jq -r '.tag_name' | sed 's/^v//')
+          LATEST_TAG=$(gh release list --repo rockorager/zigdoc --limit 1 --json tagName --jq '.[0].tagName' | sed 's/^v//')
 
           echo "current=$CURRENT_TAG" >> "$GITHUB_OUTPUT"
           echo "latest=$LATEST_TAG" >> "$GITHUB_OUTPUT"
@@ -39,6 +38,11 @@ jobs:
           NEW_HASH=$(nix-prefetch-url --unpack --type sha256 \
             "https://github.com/rockorager/zigdoc/archive/refs/tags/v${NEW_TAG}.tar.gz" 2>/dev/null \
             | xargs nix hash convert --hash-algo sha256 --to sri)
+
+          if [ -z "$NEW_TAG" ] || [ -z "$NEW_HASH" ]; then
+            echo "Error: Failed to fetch tag or hash"
+            exit 1
+          fi
 
           sed -i "s|version = \".*\";|version = \"${NEW_TAG}\";|" flake.nix
           sed -i "s|rev = \"v.*\";|rev = \"v${NEW_TAG}\";|" flake.nix
