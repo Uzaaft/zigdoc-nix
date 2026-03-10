@@ -24,13 +24,13 @@
       in {
         zigdoc = pkgs.stdenv.mkDerivation {
           pname = "zigdoc";
-          version = "0.2.2";
+          version = "0.3.0";
 
           src = pkgs.fetchFromGitHub {
             owner = "rockorager";
             repo = "zigdoc";
-            rev = "v0.2.2";
-            hash = "sha256-bvZnNiJ6YbsoQb41oAWzZNErCcAtKKudQMwvAfa4UEA=";
+            rev = "v0.3.0";
+            hash = "sha256-MhZ7LCsqZhLazDYwDZ/hzk9lYM3Bm1j96HDQ/OrdZFg=";
           };
 
           nativeBuildInputs = [pkgs.zig.hook];
